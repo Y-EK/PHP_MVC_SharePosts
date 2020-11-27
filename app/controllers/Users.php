@@ -1,8 +1,9 @@
 <?php
 class Users extends Controller
 {
-    public function __constructor()
+    public function __construct()
     {
+        $this->userModel = $this->model('User'); 
     }
 
     public function register()
@@ -33,7 +34,12 @@ class Users extends Controller
 
             // Validate Email
             if (empty($data['email'])) {
-                $data['email_err'] = 'Please enter email';
+                $data['email_err'] = 'Pleae enter email';
+            } else {
+                // Check email
+                if ($this->userModel->findUserByEmail($data['email'])) {
+                    $data['email_err'] = 'Email is already taken';
+                }
             }
 
             // Validate Password
@@ -86,7 +92,7 @@ class Users extends Controller
         // Check for post
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Process form
-           
+
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
